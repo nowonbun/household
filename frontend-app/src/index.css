@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+/*loader*/
+div.loader {
+  position: fixed;
+  left: 55%;
+  top: 50%;
+  z-index: 9999;
+  width: 50px;
+  height: 50px;
+  margin: -75px 0 0 -75px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498ff;
+  border-radius: 50%;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+div.loader.big {
+  border-width: 15px;
+  border-top-width: 15px;
+  width: 150px;
+  height: 150px;
+}
+div.loader.color-2 {
+  border-bottom-style: solid;
+  border-bottom-color: #ff3498;
+}
+div.loader.color-3 {
+  border-bottom-style: solid;
+  border-bottom-color: #ff3498;
+  border-right-style: solid;
+  border-right-color: #34ff98;
+}
+div.loader.color-4 {
+  border-bottom-style: solid;
+  border-bottom-color: #ff3498;
+  border-right-style: solid;
+  border-right-color: #34ff98;
+  border-left-style: solid;
+  border-left-color: #000000;
+}
+div.loader.on {
+  display: block;
+}
+section.loader-layout {
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 9998;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 0px;
+  height: 0px;
+  cursor: wait;
+  display: none;
+}
+section.loader-layout.on {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
