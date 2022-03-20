@@ -4,86 +4,93 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
-
 @Entity
-@Table(name="account_type")
-@NamedQuery(name="AccountType.findAll", query="SELECT a FROM AccountType a")
+@Table(name = "account_type")
 public class AccountType implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String code;
+  @Id
+  private String code;
 
-	private String name;
+  private String name;
 
-	@OneToMany(mappedBy="accountTypeBean")
-	private List<Account> accounts;
+  private boolean isdelete;
 
-	@OneToMany(mappedBy="accountTypeBean")
-	private List<Category> categories;
+  @OneToMany(mappedBy = "accountTypeBean")
+  private List<Account> accounts;
 
-	public AccountType() {
-	}
+  @OneToMany(mappedBy = "accountTypeBean")
+  private List<Category> categories;
 
-	public String getCode() {
-		return this.code;
-	}
+  public AccountType() {
+  }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+  public String getCode() {
+    return this.code;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public void setCode(String code) {
+    this.code = code;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public List<Account> getAccounts() {
-		return this.accounts;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
-	}
+  public List<Account> getAccounts() {
+    return this.accounts;
+  }
 
-	public Account addAccount(Account account) {
-		getAccounts().add(account);
-		account.setAccountTypeBean(this);
+  public void setAccounts(List<Account> accounts) {
+    this.accounts = accounts;
+  }
 
-		return account;
-	}
+  public Account addAccount(Account account) {
+    getAccounts().add(account);
+    account.setAccountTypeBean(this);
 
-	public Account removeAccount(Account account) {
-		getAccounts().remove(account);
-		account.setAccountTypeBean(null);
+    return account;
+  }
 
-		return account;
-	}
+  public Account removeAccount(Account account) {
+    getAccounts().remove(account);
+    account.setAccountTypeBean(null);
 
-	public List<Category> getCategories() {
-		return this.categories;
-	}
+    return account;
+  }
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
-	}
+  public List<Category> getCategories() {
+    return this.categories;
+  }
 
-	public Category addCategory(Category category) {
-		getCategories().add(category);
-		category.setAccountTypeBean(this);
+  public void setCategories(List<Category> categories) {
+    this.categories = categories;
+  }
 
-		return category;
-	}
+  public Category addCategory(Category category) {
+    getCategories().add(category);
+    category.setAccountTypeBean(this);
 
-	public Category removeCategory(Category category) {
-		getCategories().remove(category);
-		category.setAccountTypeBean(null);
+    return category;
+  }
 
-		return category;
-	}
+  public Category removeCategory(Category category) {
+    getCategories().remove(category);
+    category.setAccountTypeBean(null);
+
+    return category;
+  }
+
+  public boolean Isdelete() {
+    return this.isdelete;
+  }
+
+  public void setIsdelete(boolean isdelete) {
+    this.isdelete = isdelete;
+  }
 
 }

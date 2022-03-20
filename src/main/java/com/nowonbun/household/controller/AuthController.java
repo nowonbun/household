@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,11 +16,16 @@ import com.nowonbun.household.auth.JwtProvider;
 import com.nowonbun.household.bean.UserBean;
 import com.nowonbun.household.common.AbstractController;
 import com.nowonbun.household.common.Util;
+import com.nowonbun.household.dao.AccountTypeDao;
 
 @RestController
 public class AuthController extends AbstractController {
   @Autowired
   private JwtProvider jwtProvider;
+  
+  @Autowired
+  @Qualifier("AccountTypeDao")
+  private AccountTypeDao accountTypeDao;
 
   @PostMapping(value = "auth/login.auth")
   public void login(@RequestBody Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) {

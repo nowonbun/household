@@ -20,6 +20,7 @@ create table password(
 create table account_type (
 	code char(4) not null,
 	name nvarchar(1024) not null,
+	isdelete bit not null default 0,
 	
 	primary key(code)
 )

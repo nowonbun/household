@@ -5,87 +5,80 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
-/**
- * The persistent class for the user database table.
- * 
- */
 @Entity
-@NamedQuery(name="User.findAll", query="SELECT u FROM User u")
+@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
 public class User implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private String email;
+  @Id
+  private String email;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="create_date")
-	private Date createDate;
+  @Temporal(TemporalType.DATE)
+  @Column(name = "create_date")
+  private Date createDate;
 
-	private String firstname;
+  private String firstname;
 
-	private String lastname;
+  private String lastname;
 
-	//bi-directional many-to-one association to Password
-	@OneToMany(mappedBy="user")
-	private List<Password> passwords;
+  @OneToMany(mappedBy = "user")
+  private List<Password> passwords;
 
-	public User() {
-	}
+  public User() {
+  }
 
-	public String getEmail() {
-		return this.email;
-	}
+  public String getEmail() {
+    return this.email;
+  }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public Date getCreateDate() {
-		return this.createDate;
-	}
+  public Date getCreateDate() {
+    return this.createDate;
+  }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
+  }
 
-	public String getFirstname() {
-		return this.firstname;
-	}
+  public String getFirstname() {
+    return this.firstname;
+  }
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+  public void setFirstname(String firstname) {
+    this.firstname = firstname;
+  }
 
-	public String getLastname() {
-		return this.lastname;
-	}
+  public String getLastname() {
+    return this.lastname;
+  }
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+  public void setLastname(String lastname) {
+    this.lastname = lastname;
+  }
 
-	public List<Password> getPasswords() {
-		return this.passwords;
-	}
+  public List<Password> getPasswords() {
+    return this.passwords;
+  }
 
-	public void setPasswords(List<Password> passwords) {
-		this.passwords = passwords;
-	}
+  public void setPasswords(List<Password> passwords) {
+    this.passwords = passwords;
+  }
 
-	public Password addPassword(Password password) {
-		getPasswords().add(password);
-		password.setUser(this);
+  public Password addPassword(Password password) {
+    getPasswords().add(password);
+    password.setUser(this);
 
-		return password;
-	}
+    return password;
+  }
 
-	public Password removePassword(Password password) {
-		getPasswords().remove(password);
-		password.setUser(null);
+  public Password removePassword(Password password) {
+    getPasswords().remove(password);
+    password.setUser(null);
 
-		return password;
-	}
+    return password;
+  }
 
 }

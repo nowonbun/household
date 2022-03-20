@@ -6,132 +6,132 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name="Account.findAll", query="SELECT a FROM Account a")
+@NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
 public class Account implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idx;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int idx;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_date")
-	private Date createDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "create_date")
+  private Date createDate;
 
-	private String creater;
+  private String creater;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
+  @Temporal(TemporalType.DATE)
+  private Date date;
 
-	private byte isdelete;
+  private boolean isdelete;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="last_update")
-	private Date lastUpdate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "last_update")
+  private Date lastUpdate;
 
-	private BigDecimal money;
+  private BigDecimal money;
 
-	private String name;
+  private String name;
 
-	private String updater;
+  private String updater;
 
-	@ManyToOne
-	@JoinColumn(name="account_type")
-	private AccountType accountTypeBean;
+  @ManyToOne
+  @JoinColumn(name = "account_type")
+  private AccountType accountTypeBean;
 
-	@ManyToOne
-	@JoinColumn(name="category")
-	private Category categoryBean;
+  @ManyToOne
+  @JoinColumn(name = "category")
+  private Category categoryBean;
 
-	public Account() {
-	}
+  public Account() {
+  }
 
-	public int getIdx() {
-		return this.idx;
-	}
+  public int getIdx() {
+    return this.idx;
+  }
 
-	public void setIdx(int idx) {
-		this.idx = idx;
-	}
+  public void setIdx(int idx) {
+    this.idx = idx;
+  }
 
-	public Date getCreateDate() {
-		return this.createDate;
-	}
+  public Date getCreateDate() {
+    return this.createDate;
+  }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
+  }
 
-	public String getCreater() {
-		return this.creater;
-	}
+  public String getCreater() {
+    return this.creater;
+  }
 
-	public void setCreater(String creater) {
-		this.creater = creater;
-	}
+  public void setCreater(String creater) {
+    this.creater = creater;
+  }
 
-	public Date getDate() {
-		return this.date;
-	}
+  public Date getDate() {
+    return this.date;
+  }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+  public void setDate(Date date) {
+    this.date = date;
+  }
 
-	public byte getIsdelete() {
-		return this.isdelete;
-	}
+  public boolean Isdelete() {
+    return this.isdelete;
+  }
 
-	public void setIsdelete(byte isdelete) {
-		this.isdelete = isdelete;
-	}
+  public void setIsdelete(boolean isdelete) {
+    this.isdelete = isdelete;
+  }
 
-	public Date getLastUpdate() {
-		return this.lastUpdate;
-	}
+  public Date getLastUpdate() {
+    return this.lastUpdate;
+  }
 
-	public void setLastUpdate(Date lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
+  public void setLastUpdate(Date lastUpdate) {
+    this.lastUpdate = lastUpdate;
+  }
 
-	public BigDecimal getMoney() {
-		return this.money;
-	}
+  public BigDecimal getMoney() {
+    return this.money;
+  }
 
-	public void setMoney(BigDecimal money) {
-		this.money = money;
-	}
+  public void setMoney(BigDecimal money) {
+    this.money = money;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public String getName() {
+    return this.name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public String getUpdater() {
-		return this.updater;
-	}
+  public String getUpdater() {
+    return this.updater;
+  }
 
-	public void setUpdater(String updater) {
-		this.updater = updater;
-	}
+  public void setUpdater(String updater) {
+    this.updater = updater;
+  }
 
-	public AccountType getAccountTypeBean() {
-		return this.accountTypeBean;
-	}
+  public AccountType getAccountTypeBean() {
+    return this.accountTypeBean;
+  }
 
-	public void setAccountTypeBean(AccountType accountTypeBean) {
-		this.accountTypeBean = accountTypeBean;
-	}
+  public void setAccountTypeBean(AccountType accountTypeBean) {
+    this.accountTypeBean = accountTypeBean;
+  }
 
-	public Category getCategoryBean() {
-		return this.categoryBean;
-	}
+  public Category getCategoryBean() {
+    return this.categoryBean;
+  }
 
-	public void setCategoryBean(Category categoryBean) {
-		this.categoryBean = categoryBean;
-	}
+  public void setCategoryBean(Category categoryBean) {
+    this.categoryBean = categoryBean;
+  }
 
 }
