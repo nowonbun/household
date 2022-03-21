@@ -5,12 +5,13 @@ import com.nowonbun.household.dao.DatabaseConfig;
 
 public abstract class AbstractDao<T> {
   private Class<T> clazz;
+  private EntityManager debug = null;
 
-  protected interface EntityManagerRunable {
+  public interface EntityManagerRunable {
     void run(EntityManager em);
   }
 
-  protected interface EntityManagerCallable<V> {
+  public interface EntityManagerCallable<V> {
     V run(EntityManager em);
   }
 
@@ -29,24 +30,36 @@ public abstract class AbstractDao<T> {
   }
 
   public T create(T entity) {
+    return create(entity, false);
+  }
+
+  public T create(T entity, boolean readonly) {
     return transaction((em) -> {
       em.persist(entity);
       return entity;
-    });
+    }, readonly);
   }
 
   public T update(T entity) {
+    return update(entity, false);
+  }
+
+  public T update(T entity, boolean readonly) {
     return transaction((em) -> {
       em.detach(entity);
       return em.merge(entity);
-    });
+    }, readonly);
   }
 
   public void delete(T entity) {
+    delete(entity, false);
+  }
+
+  public void delete(T entity, boolean readonly) {
     transaction((em) -> {
       em.detach(entity);
       em.remove(em.merge(entity));
-    });
+    }, readonly);
   }
 
   public <V> V transaction(EntityManagerCallable<V> callable) {
@@ -54,6 +67,9 @@ public abstract class AbstractDao<T> {
   }
 
   public <V> V transaction(EntityManagerCallable<V> callable, boolean readonly) {
+    if (this.debug != null) {
+      return callable.run(this.debug);
+    }
     var em = DatabaseConfig.getInstance().getEntityManagerFactory().createEntityManager();
     var transaction = em.getTransaction();
     transaction.begin();
@@ -80,6 +96,10 @@ public abstract class AbstractDao<T> {
   }
 
   public void transaction(EntityManagerRunable runnable, boolean readonly) {
+    if (this.debug != null) {
+      runnable.run(this.debug);
+      return;
+    }
     var em = DatabaseConfig.getInstance().getEntityManagerFactory().createEntityManager();
     var transaction = em.getTransaction();
     transaction.begin();
