@@ -1,34 +1,37 @@
-create table user(
-	email varchar(1024) not null,
+drop table if exists password;
+drop table if exists user;
+drop table if exists account;
+drop table if exists category;
+drop table if exists account_type;
+
+create table if not exists user(
+	email varchar(256) not null,
 	firstname nvarchar(1024) not null,
 	lastname nvarchar(1024) not null,
 	create_date date,
 	primary key(email)
-)
+);
 
-create table password(
+create table if not exists password(
 	idx int auto_increment not null,
-	email varchar(1024) not null,
+	email varchar(256) not null,
 	password varchar(128) not null,
 	isdelete bit not null default 0,
 	create_date datetime,
 	
 	primary key(idx),
 	foreign key (email) references user(email)
-)
+);
 
-create table account_type (
+create table if not exists account_type (
 	code char(4) not null,
 	name nvarchar(1024) not null,
 	isdelete bit not null default 0,
 	
 	primary key(code)
-)
+);
 
-insert into account_type (code,name) values('PYMN', N'支出');
-insert into account_type (code,name) values('INCM', N'収入');
-
-create table category (
+create table if not exists category (
 	idx int auto_increment not null,
 	account_type char(4) not null,
 	name nvarchar(1024) not null,
@@ -40,9 +43,9 @@ create table category (
 	
 	primary key(idx),
 	foreign key (account_type) references account_type(code)
-)
+);
 
-create table account(
+create table if not exists account(
 	idx int auto_increment not null,
 	account_type char(4) not null,
 	category int not null,

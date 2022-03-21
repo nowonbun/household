@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @ImportAutoConfiguration(DatabaseConfig.class)
 public class AccountTypeDaoTest {
 
+  // https://xlffm3.github.io/spring%20data/spring-db-initialization/
   @Autowired
   public AccountTypeDao accountTypeDao;
 
