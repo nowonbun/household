@@ -10,38 +10,29 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.nowonbun.household.AbstractTest;
 import com.nowonbun.household.common.AbstractDao;
 
-@DataJpaTest
+@DataJpaTest(properties = {
+    "spring.datasource.url=jdbc:mysql://localhost:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul"
+})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @ImportAutoConfiguration(DatabaseConfig.class)
-public class PasswordDaoTest {
+public class PasswordDaoTest extends AbstractTest {
   @Autowired
   public PasswordDao passwordDao;
 
   @BeforeEach
   public void setDebug() {
-    try {
-      var em = DatabaseConfig.getInstance().getEntityManagerFactory().createEntityManager();
-      var field = AbstractDao.class.getDeclaredField("debug");
-      field.setAccessible(true);
-      field.set(passwordDao, em);
-      em.getTransaction().begin();
-    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+    var em = DatabaseConfig.getInstance().getEntityManagerFactory().createEntityManager();
+    super.setField(AbstractDao.class, passwordDao, "debug", em);
+    em.getTransaction().begin();
   }
 
   @AfterEach
   public void rollback() {
-    try {
-      var field = AbstractDao.class.getDeclaredField("debug");
-      field.setAccessible(true);
-      var em = (EntityManager) field.get(passwordDao);
-      em.getTransaction().rollback();
-      em.close();
-    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
+    EntityManager em = super.getField(AbstractDao.class, passwordDao, "debug");
+    em.getTransaction().rollback();
+    em.close();
   }
 }

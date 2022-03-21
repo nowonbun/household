@@ -19,10 +19,10 @@ import io.jsonwebtoken.SignatureException;
 
 @Component
 public class JwtProvider {
-  @Value("spring.jwt.secret")
-  private String SECRET_KEY = "secret";
-  @Value("spring.jwt.access")
-  private String ACCESS_KEY = "access";
+  @Value("${spring.jwt.secret}")
+  private String SECRET_KEY = "";
+  @Value("${spring.jwt.access}")
+  private String ACCESS_KEY = "";
   private final int TICK_24HOUR = 1000 * 60 * 60 * 24;
   private final int TICK_10MIN = 1000 * 60 * 10;
   private final String X_AUTH_TOKEN_REFRESH = "X-AUTH-TOKEN-REFRESH";
@@ -51,7 +51,6 @@ public class JwtProvider {
       return;
     }
     res.addCookie(this.createCookie(null, X_AUTH_TOKEN_REFRESH, 0));
-    //res.addCookie(this.createCookie(null, X_AUTH_TOKEN_ACCESS, 0));
   }
 
   public String createToken(String id, long milisecond, String signature, HttpServletRequest req) {

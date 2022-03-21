@@ -22,7 +22,7 @@ import com.nowonbun.household.dao.AccountTypeDao;
 public class AuthController extends AbstractController {
   @Autowired
   private JwtProvider jwtProvider;
-  
+
   @Autowired
   @Qualifier("AccountTypeDao")
   private AccountTypeDao accountTypeDao;
@@ -34,7 +34,7 @@ public class AuthController extends AbstractController {
     user.setId(params.get("id"));
     jwtProvider.createAccessToken(Util.convertSerializable(user), req, res);
     res.setStatus(200);
-    //res.setStatus(403);
+    // res.setStatus(403);
   }
 
   @PostMapping(value = "auth/check.auth")
