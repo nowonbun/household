@@ -17,7 +17,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
 public class WebFilter extends GenericFilterBean {
-
   private JwtProvider jwtProvider;
   private UsernamePasswordAuthenticationToken auth;
 
@@ -29,7 +28,6 @@ public class WebFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
     var req = (HttpServletRequest) request;
     var res = (HttpServletResponse) response;
 

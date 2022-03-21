@@ -15,11 +15,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import com.nowonbun.household.AbstractTest;
+import com.nowonbun.household.config.SecurityConfig;
+import com.nowonbun.household.service.StringUtil;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @WebMvcTest(value = JwtProvider.class, properties = { "spring.jwt.secret=secret1", "spring.jwt.access=access1" })
-@ImportAutoConfiguration(SecurityConfig.class)
+@ImportAutoConfiguration({ SecurityConfig.class, StringUtil.class })
 public class JwtProviderTest extends AbstractTest {
 
   @Autowired

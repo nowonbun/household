@@ -5,10 +5,11 @@ import java.util.Date;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.nowonbun.household.common.Util;
+import com.nowonbun.household.service.StringUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,6 +24,9 @@ public class JwtProvider {
   private String SECRET_KEY = "";
   @Value("${spring.jwt.access}")
   private String ACCESS_KEY = "";
+  @Autowired
+  private StringUtil stringUtil;
+
   private final int TICK_24HOUR = 1000 * 60 * 60 * 24;
   private final int TICK_10MIN = 1000 * 60 * 10;
   private final String X_AUTH_TOKEN_REFRESH = "X-AUTH-TOKEN-REFRESH";
@@ -84,7 +88,7 @@ public class JwtProvider {
 
   public Jws<Claims> getAccessToken(HttpServletRequest req) {
     var code = req.getHeader(X_AUTH_TOKEN_ACCESS);
-    if (!Util.isStringNullOrWhitespace(code)) {
+    if (!stringUtil.isStringNullOrWhitespace(code)) {
       var token = parseToken(code, ACCESS_KEY);
       if (token != null) {
         return token;

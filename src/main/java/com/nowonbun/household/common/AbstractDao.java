@@ -1,7 +1,8 @@
 package com.nowonbun.household.common;
 
 import javax.persistence.EntityManager;
-import com.nowonbun.household.dao.DatabaseConfig;
+
+import com.nowonbun.household.config.DatabaseConfig;
 
 public abstract class AbstractDao<T> {
   private Class<T> clazz;

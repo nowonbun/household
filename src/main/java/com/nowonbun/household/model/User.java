@@ -2,6 +2,9 @@ package com.nowonbun.household.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.BatchSize;
+
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +24,8 @@ public class User implements Serializable {
 
   private String lastname;
 
-  @OneToMany(mappedBy = "user")
+  @BatchSize(size = 1)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
   private List<Password> passwords;
 
   public User() {

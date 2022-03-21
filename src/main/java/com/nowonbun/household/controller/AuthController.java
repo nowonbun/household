@@ -2,10 +2,8 @@ package com.nowonbun.household.controller;
 
 import java.util.Date;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ui.Model;
@@ -15,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nowonbun.household.auth.JwtProvider;
 import com.nowonbun.household.bean.UserBean;
 import com.nowonbun.household.common.AbstractController;
-import com.nowonbun.household.common.Util;
-import com.nowonbun.household.dao.AccountTypeDao;
+import com.nowonbun.household.dao.UserDao;
+import com.nowonbun.household.service.StringUtil;
 
 @RestController
 public class AuthController extends AbstractController {
@@ -24,17 +22,25 @@ public class AuthController extends AbstractController {
   private JwtProvider jwtProvider;
 
   @Autowired
-  @Qualifier("AccountTypeDao")
-  private AccountTypeDao accountTypeDao;
+  @Qualifier("UserDao")
+  private UserDao userDao;
+
+  @Autowired
+  private StringUtil stringUtil;
 
   @PostMapping(value = "auth/login.auth")
   public void login(@RequestBody Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) {
-    jwtProvider.createRefreshToken(params.get("id"), req, res);
-    var user = new UserBean();
-    user.setId(params.get("id"));
-    jwtProvider.createAccessToken(Util.convertSerializable(user), req, res);
-    res.setStatus(200);
-    // res.setStatus(403);
+    if (userDao.signOn(params.get("id"), stringUtil.md5(params.get("pw")))) {
+      jwtProvider.createRefreshToken(params.get("id"), req, res);
+      var user = new UserBean();
+      user.setId(params.get("id"));
+      jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
+      res.setStatus(200);
+      return;
+    }
+    jwtProvider.clearToken(req, res);
+    res.setStatus(403);
+    return;
   }
 
   @PostMapping(value = "auth/check.auth")
@@ -63,7 +69,7 @@ public class AuthController extends AbstractController {
     var id = jwtProvider.getId(refresh);
     var user = new UserBean();
     user.setId(id);
-    var tt = jwtProvider.createAccessToken(Util.convertSerializable(user), req, res);
+    var tt = jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
     System.out.println(tt);
     res.setStatus(200);
   }

@@ -1,10 +1,15 @@
-package com.nowonbun.household.dao;
+package com.nowonbun.household.config;
 
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.nowonbun.household.common.FactoryDao;
+import com.nowonbun.household.dao.AccountDao;
+import com.nowonbun.household.dao.AccountTypeDao;
+import com.nowonbun.household.dao.CategoryDao;
+import com.nowonbun.household.dao.PasswordDao;
+import com.nowonbun.household.dao.UserDao;
 
 @Configuration
 public class DatabaseConfig {

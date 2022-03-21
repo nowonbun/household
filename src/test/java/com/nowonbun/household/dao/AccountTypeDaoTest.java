@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.nowonbun.household.AbstractTest;
 import com.nowonbun.household.common.AbstractDao;
+import com.nowonbun.household.config.DatabaseConfig;
 
 @DataJpaTest(properties = {
     "spring.datasource.url=jdbc:mysql://localhost:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul"

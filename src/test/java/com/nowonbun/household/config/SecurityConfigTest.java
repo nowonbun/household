@@ -1,18 +1,18 @@
-package com.nowonbun.household.auth;
+package com.nowonbun.household.config;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
-
 import com.nowonbun.household.AbstractTest;
+import com.nowonbun.household.auth.JwtProvider;
+import com.nowonbun.household.service.StringUtil;
 
 @WebMvcTest(value = SecurityConfig.class, properties = { "spring.jwt.secret=secret1", "spring.jwt.access=access1" })
-@ImportAutoConfiguration(JwtProvider.class)
+@ImportAutoConfiguration({JwtProvider.class, StringUtil.class})
 public class SecurityConfigTest extends AbstractTest {
 
   @Autowired
