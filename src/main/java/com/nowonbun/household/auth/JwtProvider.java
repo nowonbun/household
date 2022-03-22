@@ -38,14 +38,14 @@ public class JwtProvider {
   }
 
   public String createRefreshToken(String id, HttpServletRequest req, HttpServletResponse res) {
-    var token = createToken(id, TICK_24HOUR * 14, SECRET_KEY, req);
+    var token = createToken(id, TICK_24HOUR * 14, SECRET_KEY);
     var cookie = createCookie(token, X_AUTH_TOKEN_REFRESH, TICK_24HOUR * 14 / 1000);
     res.addCookie(cookie);
     return token;
   }
 
   public String createAccessToken(String id, HttpServletRequest req, HttpServletResponse res) {
-    var token = createToken(id, TICK_10MIN, ACCESS_KEY, req);
+    var token = createToken(id, TICK_10MIN, ACCESS_KEY);
     res.setHeader(X_AUTH_TOKEN_ACCESS, token);
     return token;
   }
@@ -57,7 +57,7 @@ public class JwtProvider {
     res.addCookie(this.createCookie(null, X_AUTH_TOKEN_REFRESH, 0));
   }
 
-  public String createToken(String id, long milisecond, String signature, HttpServletRequest req) {
+  public String createToken(String id, long milisecond, String signature) {
     var claims = Jwts.claims().setId(id);
     var now = new Date();
     return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + milisecond)).signWith(SignatureAlgorithm.HS256, signature).compact();
@@ -66,7 +66,7 @@ public class JwtProvider {
   public Jws<Claims> parseToken(String jwt, String signature) {
     try {
       return Jwts.parser().setSigningKey(signature).parseClaimsJws(jwt);
-    } catch (SignatureException | ExpiredJwtException e) {
+    } catch (SignatureException | ExpiredJwtException | IllegalArgumentException e) {
       return null;
     }
   }

@@ -7,13 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.HashMap;
+import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,14 +20,13 @@ import com.google.gson.Gson;
 import com.nowonbun.household.AbstractTest;
 import com.nowonbun.household.auth.JwtProvider;
 import com.nowonbun.household.bean.UserBean;
-import com.nowonbun.household.dao.AccountTypeDao;
 import com.nowonbun.household.dao.UserDao;
 import com.nowonbun.household.service.StringUtil;
 import io.jsonwebtoken.Jwts;
 
 @WebMvcTest(value = AuthController.class, properties = { "spring.jwt.secret=secret1", "spring.jwt.access=access1" })
-@AutoConfigureTestDatabase(replace = Replace.NONE)
 @ImportAutoConfiguration({ JwtProvider.class, StringUtil.class })
+//@AutoConfigureTestDatabase(replace = Replace.NONE)
 //@AutoConfigureMockMvc
 public class AuthControllerTest extends AbstractTest {
 
@@ -64,20 +61,61 @@ public class AuthControllerTest extends AbstractTest {
   public void loginTest() throws Exception {
 
     when(userDao.signOn("nowonbun", stringUtil.md5("112"))).thenReturn(true);
-    
+
     var map = new HashMap<String, String>();
     map.put("id", "nowonbun");
     map.put("pw", "112");
     String content = gson.toJson(map);
-    var req = post("/auth/login.auth").content(content).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
-    var res = mockMvc.perform(req).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
-    var cookie = res.getResponse().getCookie("X-AUTH-TOKEN-REFRESH");
+    var reqb = post("/auth/login.auth").content(content).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
+    var cookie = ret.getResponse().getCookie("X-AUTH-TOKEN-REFRESH");
     assertEquals(cookie.getPath(), "/");
     assertEquals(cookie.getSecure(), true);
     var token = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(cookie.getValue());
     assertEquals(token.getBody().getId(), "nowonbun");
 
-    token = Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(res.getResponse().getHeader("X-AUTH-TOKEN-ACCESS"));
+    token = Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(ret.getResponse().getHeader("X-AUTH-TOKEN-ACCESS"));
+    UserBean bean = stringUtil.deserialize(token.getBody().getId());
+    assertEquals(bean.getId(), "nowonbun");
+  }
+
+  @Test
+  public void checkTest() throws Exception {
+    // filter!
+    var reqb = post("/auth/check.auth").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    var ret = mockMvc.perform(reqb).andExpect(status().isForbidden()).andDo(print()).andDo(log()).andReturn();
+
+    jwtProvider.createRefreshToken("nowonbun", ret.getRequest(), ret.getResponse());
+    reqb = post("/auth/check.auth").cookie(ret.getResponse().getCookies()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
+  }
+  
+  @Test
+  public void logoutTest() throws Exception {
+    var cookie = new Cookie("X-AUTH-TOKEN-REFRESH", jwtProvider.createToken("nowonbun", 1000 * 60 * 60 * 24 * 14, SECRET_KEY));
+    cookie.setMaxAge(100000);
+    
+    var reqb = post("/auth/logout.auth").cookie(cookie).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
+
+    cookie = ret.getResponse().getCookie("X-AUTH-TOKEN-REFRESH");
+    assertEquals(cookie.getSecure(), true);
+    assertEquals(cookie.getPath(), "/");
+    assertEquals(cookie.getMaxAge(), 0);
+  }
+  
+  @Test
+  public void refreshTest() throws Exception {
+    var reqb = post("/auth/refesh.auth").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    mockMvc.perform(reqb).andExpect(status().isForbidden()).andDo(print()).andDo(log()).andReturn();
+    
+    var cookie = new Cookie("X-AUTH-TOKEN-REFRESH", jwtProvider.createToken("nowonbun", 1000 * 60 * 60 * 24 * 14, SECRET_KEY));
+    cookie.setMaxAge(100000);
+    
+    reqb = post("/auth/refesh.auth").cookie(cookie).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
+    
+    var token = Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(ret.getResponse().getHeader("X-AUTH-TOKEN-ACCESS"));
     UserBean bean = stringUtil.deserialize(token.getBody().getId());
     assertEquals(bean.getId(), "nowonbun");
   }

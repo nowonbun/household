@@ -80,7 +80,7 @@ public class JwtProviderTest extends AbstractTest {
 
   @Test
   public void createTokenTest() {
-    var token = jwtProvider.createToken("nowonbun", 10000, SECRET_KEY, req);
+    var token = jwtProvider.createToken("nowonbun", 10000, SECRET_KEY);
     var jwt = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
     assertEquals(jwt.getBody().getId(), "nowonbun");
   }

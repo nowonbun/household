@@ -69,8 +69,7 @@ public class AuthController extends AbstractController {
     var id = jwtProvider.getId(refresh);
     var user = new UserBean();
     user.setId(id);
-    var tt = jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
-    System.out.println(tt);
+    jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
     res.setStatus(200);
   }
 
