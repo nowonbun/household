@@ -90,7 +90,8 @@ public class AuthControllerTest extends AbstractTest {
   public void checkTest() throws Exception {
     // filter!
     var reqb = post("/auth/check.auth").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
-    var ret = mockMvc.perform(reqb).andExpect(status().isForbidden()).andDo(print()).andDo(log()).andReturn();
+    var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
+    assertEquals(ret.getResponse().getContentAsString(), "-1");
 
     jwtProvider.createRefreshToken("nowonbun", ret.getRequest(), ret.getResponse());
     reqb = post("/auth/check.auth").cookie(ret.getResponse().getCookies()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);

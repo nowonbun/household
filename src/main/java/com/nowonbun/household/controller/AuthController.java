@@ -46,7 +46,7 @@ public class AuthController extends AbstractController {
   public long check(Model model, HttpServletRequest req, HttpServletResponse res) {
     var refresh = jwtProvider.getRefreshToken(req);
     if (refresh == null) {
-      res.setStatus(403);
+      res.setStatus(200);
       return -1L;
     }
     res.setStatus(200);
@@ -65,6 +65,7 @@ public class AuthController extends AbstractController {
       res.setStatus(403);
       return;
     }
+    // reset Refresh Token, too
     var id = jwtProvider.getId(refresh);
     var user = userDao.findOne(id);
     if (user == null) {

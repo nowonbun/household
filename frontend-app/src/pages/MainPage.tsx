@@ -5,7 +5,7 @@ interface ChildProps {
     children: React.ReactNode
 }
 
-const Main = memo(({ onClick, children }: ChildProps) => {
+const MainPage = memo(({ onClick, children }: ChildProps) => {
     return (
         <>
             <p><button onClick={onClick}>logout</button><br /></p>
@@ -13,4 +13,4 @@ const Main = memo(({ onClick, children }: ChildProps) => {
     )
 });
 
-export default Main;
+export default MainPage;

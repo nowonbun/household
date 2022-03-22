@@ -36,7 +36,7 @@ public class WebFilter extends GenericFilterBean {
       chain.doFilter(request, response);
       return;
     }
-    if (!url.matches("/auth/login.auth")) {
+    if (!url.matches("/auth/login.auth") && !url.matches("/auth/check.auth")) {
       Jws<Claims> token = null;
       if (url.matches("/auth/(.*)")) {
         token = jwtProvider.getRefreshToken(req);

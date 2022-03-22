@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState, memo } from 'react';
+import { useAuth } from '../auth/AuthProvider';
 
 interface ChildProps {
-    errorMessage: string;
     onKeyPress: (e: React.KeyboardEvent) => void;
     onClick: () => void;
 }
 
-const Login = memo(({ errorMessage, onKeyPress, onClick }: ChildProps) => {
+const LoginPage = memo(({ onKeyPress, onClick }: ChildProps) => {
+    let auth = useAuth();
     return (
         <div className="container">
             <div className="row justify-content-center">
@@ -20,7 +21,7 @@ const Login = memo(({ errorMessage, onKeyPress, onClick }: ChildProps) => {
                                             <h1 className="h4 text-gray-900 mb-4">Account book</h1>
                                         </div>
                                         <div className='text-danger p-2'>
-                                            {errorMessage}
+                                            {auth.errorMessage}
                                         </div>
                                         <form className="user">
                                             <div className="form-group">
@@ -44,4 +45,4 @@ const Login = memo(({ errorMessage, onKeyPress, onClick }: ChildProps) => {
     )
 });
 
-export default Login;
+export default LoginPage;
