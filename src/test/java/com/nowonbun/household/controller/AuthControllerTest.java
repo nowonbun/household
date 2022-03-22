@@ -21,6 +21,7 @@ import com.nowonbun.household.AbstractTest;
 import com.nowonbun.household.auth.JwtProvider;
 import com.nowonbun.household.bean.UserBean;
 import com.nowonbun.household.dao.UserDao;
+import com.nowonbun.household.model.User;
 import com.nowonbun.household.service.StringUtil;
 import io.jsonwebtoken.Jwts;
 
@@ -60,10 +61,15 @@ public class AuthControllerTest extends AbstractTest {
   @Test
   public void loginTest() throws Exception {
 
-    when(userDao.signOn("nowonbun", stringUtil.md5("112"))).thenReturn(true);
+    User user = new User();
+    user.setEmail("nowonbun@naver.com");
+    user.setLastname("aaa");
+    user.setFirstname("bbb");
+
+    when(userDao.signOn("nowonbun@naver.com", stringUtil.md5("112"))).thenReturn(user);
 
     var map = new HashMap<String, String>();
-    map.put("id", "nowonbun");
+    map.put("id", "nowonbun@naver.com");
     map.put("pw", "112");
     String content = gson.toJson(map);
     var reqb = post("/auth/login.auth").content(content).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
@@ -72,11 +78,12 @@ public class AuthControllerTest extends AbstractTest {
     assertEquals(cookie.getPath(), "/");
     assertEquals(cookie.getSecure(), true);
     var token = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(cookie.getValue());
-    assertEquals(token.getBody().getId(), "nowonbun");
+    assertEquals(token.getBody().getId(), "nowonbun@naver.com");
 
     token = Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(ret.getResponse().getHeader("X-AUTH-TOKEN-ACCESS"));
     UserBean bean = stringUtil.deserialize(token.getBody().getId());
-    assertEquals(bean.getId(), "nowonbun");
+    assertEquals(bean.getId(), "nowonbun@naver.com");
+    assertEquals(bean.getName(), "aaa bbb");
   }
 
   @Test
@@ -89,12 +96,12 @@ public class AuthControllerTest extends AbstractTest {
     reqb = post("/auth/check.auth").cookie(ret.getResponse().getCookies()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
     ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
   }
-  
+
   @Test
   public void logoutTest() throws Exception {
     var cookie = new Cookie("X-AUTH-TOKEN-REFRESH", jwtProvider.createToken("nowonbun", 1000 * 60 * 60 * 24 * 14, SECRET_KEY));
     cookie.setMaxAge(100000);
-    
+
     var reqb = post("/auth/logout.auth").cookie(cookie).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
     var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
 
@@ -103,20 +110,31 @@ public class AuthControllerTest extends AbstractTest {
     assertEquals(cookie.getPath(), "/");
     assertEquals(cookie.getMaxAge(), 0);
   }
-  
+
   @Test
   public void refreshTest() throws Exception {
+    User user = new User();
+    user.setEmail("nowonbun@naver.com");
+    user.setLastname("aaa");
+    user.setFirstname("bbb");
+
+    when(userDao.findOne("nowonbun@naver.com")).thenReturn(user);
+
     var reqb = post("/auth/refesh.auth").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
     mockMvc.perform(reqb).andExpect(status().isForbidden()).andDo(print()).andDo(log()).andReturn();
-    
-    var cookie = new Cookie("X-AUTH-TOKEN-REFRESH", jwtProvider.createToken("nowonbun", 1000 * 60 * 60 * 24 * 14, SECRET_KEY));
+
+    var cookie = new Cookie("X-AUTH-TOKEN-REFRESH", jwtProvider.createToken("nowonbun@naver.com", 1000 * 60 * 60 * 24 * 14, SECRET_KEY));
     cookie.setMaxAge(100000);
-    
+
     reqb = post("/auth/refesh.auth").cookie(cookie).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
     var ret = mockMvc.perform(reqb).andExpect(status().isOk()).andDo(print()).andDo(log()).andReturn();
-    
+
     var token = Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(ret.getResponse().getHeader("X-AUTH-TOKEN-ACCESS"));
     UserBean bean = stringUtil.deserialize(token.getBody().getId());
-    assertEquals(bean.getId(), "nowonbun");
+    assertEquals(bean.getId(), "nowonbun@naver.com");
+    assertEquals(bean.getName(), "aaa bbb");
+
+    reqb = post("/auth/refesh.auth").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+    mockMvc.perform(reqb).andExpect(status().isForbidden()).andDo(print()).andDo(log()).andReturn();
   }
 }

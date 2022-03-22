@@ -1,5 +1,7 @@
 package com.nowonbun.household.dao;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -71,12 +73,12 @@ public class UserDaoTest extends AbstractTest {
     userDao.create(user);
 
     var ret = userDao.signOn("nowonbun", stringUtil.md5("111"));
-    assertEquals(ret, false);
+    assertNull(ret);
     
     ret = userDao.signOn("nowonbun", stringUtil.md5("1111"));
-    assertEquals(ret, false);
+    assertNull(ret);
     
     ret = userDao.signOn("nowonbun", stringUtil.md5("222"));
-    assertEquals(ret, true);
+    assertNotNull(ret);
   }
 }

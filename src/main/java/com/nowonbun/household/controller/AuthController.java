@@ -30,11 +30,10 @@ public class AuthController extends AbstractController {
 
   @PostMapping(value = "auth/login.auth")
   public void login(@RequestBody Map<String, String> params, Model model, HttpServletRequest req, HttpServletResponse res) {
-    if (userDao.signOn(params.get("id"), stringUtil.md5(params.get("pw")))) {
+    var user = userDao.signOn(params.get("id"), stringUtil.md5(params.get("pw")));
+    if (user != null) {
       jwtProvider.createRefreshToken(params.get("id"), req, res);
-      var user = new UserBean();
-      user.setId(params.get("id"));
-      jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
+      jwtProvider.createAccessToken(stringUtil.serialize(new UserBean(user)), req, res);
       res.setStatus(200);
       return;
     }
@@ -67,9 +66,12 @@ public class AuthController extends AbstractController {
       return;
     }
     var id = jwtProvider.getId(refresh);
-    var user = new UserBean();
-    user.setId(id);
-    jwtProvider.createAccessToken(stringUtil.serialize(user), req, res);
+    var user = userDao.findOne(id);
+    if (user == null) {
+      res.setStatus(403);
+      return;
+    }
+    jwtProvider.createAccessToken(stringUtil.serialize(new UserBean(user)), req, res);
     res.setStatus(200);
   }
 
