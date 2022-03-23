@@ -30,7 +30,7 @@ function App() {
         <Route path="/login.html" element={<LoginPage onClick={() => { auth.signin(); }} onKeyPress={onKeyPress}></LoginPage>} />
         <Route path="*" element={
           <RequireAuth>
-            <MainPage onClick={() => { auth.signout(); }}>logout</MainPage>
+            <MainPage onSignOut={() => { auth.signout(); }}>logout</MainPage>
           </RequireAuth>
         }
         />
