@@ -9,7 +9,7 @@ const MainPage = memo(({ onSignOut, children }: ChildProps) => {
     return (
         <>
             <div id="wrapper">
-                <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+                <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
                     <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                         <div className="sidebar-brand-icon rotate-n-15">
                             <i className="fas fa-laugh-wink"></i>
@@ -90,9 +90,6 @@ const MainPage = memo(({ onSignOut, children }: ChildProps) => {
                             <span>Tables</span></a>
                     </li>
                     <hr className="sidebar-divider d-none d-md-block"></hr>
-                    <div className="text-center d-none d-md-inline">
-                        <button className="rounded-circle border-0" id="sidebarToggle"></button>
-                    </div>
                 </ul>
                 <div id="content-wrapper" className="d-flex flex-column">
                     <div id="content">
