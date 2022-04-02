@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from 'react';
 import MainPage from './pages/MainPage'
 import LoginPage from './pages/LoginPage';
 import Loader from './components/Loader'
-/*import { createTokenCode, getAccessCode } from './auth/Auth';*/
 import { AuthProvider, RequireAuth, useAuth } from './auth/AuthProvider';
 import {
   Routes,
